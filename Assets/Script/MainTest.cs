@@ -4,15 +4,17 @@ using UnityEngine;
 
 public class MainTest : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
+    public float speed = 1;
+
+    public void Start()
     {
         
     }
 
-    // Update is called once per frame
-    void Update()
+    private void Update()
     {
         
     }
+
+
 }
