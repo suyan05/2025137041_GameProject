@@ -13,30 +13,44 @@ public class Enemy : MonoBehaviour
 
     public void Start()
     {
-        Health += 100;
+        Health = 100;
     }
 
     private void Update()
     {
+        /*if(Input.GetKeyDown(KeyCode.Space))
+        {
+            Health -= AttackDamege;
+        }*/
+
+        CheckDath();
+        EnemyMove();
+        CharacterHealthUp();
+    }
+
+    public void CharacterHit(int Damage)
+    {
+
+        Health -= Damage;
+    }
+
+    private void CheckDath()
+    {
+        if (Health <= 0)
+        {
+            Destroy(gameObject);
+        }
+    }
+
+    private void CharacterHealthUp()
+    {
         Timer -= Time.deltaTime;
 
-        if(Timer <= 0)
+        if (Timer <= 0)
         {
             Timer = 1;
             Health += 10;
         }
-
-        if(Input.GetKeyDown(KeyCode.Space))
-        {
-            Health -= AttackDamege;
-        }
-
-        if(Health <= 0)
-        {
-            Destroy(gameObject);
-        }
-
-        EnemyMove();
     }
 
     private void EnemyMove()
