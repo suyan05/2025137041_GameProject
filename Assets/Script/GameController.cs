@@ -22,7 +22,7 @@ public class GameController : MonoBehaviour
         {
             Timer = Timer2;
             GameObject Temp = Instantiate(EnemtObject);
-            Temp.transform.position = new Vector3(Random.Range(-8, 8), Random.Range(-4, 4), 0);
+            Temp.transform.position = new Vector3(Random.Range(-8, 8), Random.Range(-2, 4), 0);
         }
 
         if (Input.GetMouseButtonDown(0))
