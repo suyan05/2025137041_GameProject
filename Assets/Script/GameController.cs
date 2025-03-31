@@ -10,6 +10,7 @@ public class GameController : MonoBehaviour
     
     private void Start()
     {
+
         Timer2 = Timer;
     }
 
