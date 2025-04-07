@@ -54,8 +54,9 @@ public class PlayerMove : MonoBehaviour
         if(collision.gameObject.tag == "Door" && CoinCount >= TotalCoin)
         {
             Debug.Log("EndGame");
+            UnityEditor.EditorApplication.isPlaying = false;
         }
-        else
+        else if(collision.gameObject.tag == "Door" && CoinCount < TotalCoin)
         {
             Debug.Log($"{TotalCoin - CoinCount}개의 코인을 더 모으세요");
         }
@@ -71,3 +72,4 @@ public class PlayerMove : MonoBehaviour
         }
     }
 }
+
