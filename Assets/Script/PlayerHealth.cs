@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class PlayerHealth : MonoBehaviour
 {
@@ -30,10 +31,24 @@ public class PlayerHealth : MonoBehaviour
 
     private void PlayerDath()
     {
+        
+
         if (CurrentLife <=0)
         {
+            GameOver();
             Debug.Log("GameOver");
-            UnityEditor.EditorApplication.isPlaying = false;
+            //UnityEditor.EditorApplication.isPlaying = false;
         }
     }
+
+    public void GameOver()
+    {
+        gameObject.SetActive(false);
+        Invoke("RestartGame", 3.0f);
+    }
+
+    public void RestartGame()
+    {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name)
+;    }
 }
