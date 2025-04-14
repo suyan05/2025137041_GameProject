@@ -4,18 +4,6 @@ using UnityEngine;
 
 public class Ball : MonoBehaviour
 {
-
-
-    private void Start()
-    {
-        Debug.Log("Test");
-    }
-
-    private void Update()
-    {
-        
-    }
-
     private void OnCollisionEnter(Collision collision)
     {
         if(collision.gameObject.tag == "Ground")
