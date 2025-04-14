@@ -8,7 +8,7 @@ public class Ball : MonoBehaviour
 
     private void Start()
     {
-        
+        Debug.Log("Test");
     }
 
     private void Update()
