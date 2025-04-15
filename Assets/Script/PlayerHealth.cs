@@ -31,8 +31,6 @@ public class PlayerHealth : MonoBehaviour
 
     private void PlayerDath()
     {
-        
-
         if (CurrentLife <=0)
         {
             GameOver();
@@ -50,5 +48,5 @@ public class PlayerHealth : MonoBehaviour
     public void RestartGame()
     {
         SceneManager.LoadScene(SceneManager.GetActiveScene().name)
-;    }
+;   }
 }
