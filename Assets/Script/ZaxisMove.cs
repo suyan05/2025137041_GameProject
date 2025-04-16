@@ -20,7 +20,8 @@ public class ZaxisMove : MonoBehaviour
         {
             if(Timer < 0)
             {
-                Destroy(gameObject);            }
+                Destroy(gameObject); 
+            }
         }
     }
 }
