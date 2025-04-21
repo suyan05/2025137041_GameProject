@@ -20,6 +20,14 @@ public class PlayerMove : MonoBehaviour
     public float coyoteTimeCounter;
     public bool realGround = true;
 
+    [Header("글라이더")]
+    public GameObject gliderObj;
+    public float gliderFallSpeed = 1f;
+    public float gliderMoveSpeed = 7f;
+    public float gliderMaxTime = 5f;
+    public float gliderTimeLeft;
+    public bool isGlideing = false;
+
     public int CoinCount = 0;
     public int TotalCoin = 5;
 
@@ -28,17 +36,23 @@ public class PlayerMove : MonoBehaviour
 
     private void Awake()
     {
+        if(gliderObj!=null)
+        {
+            gliderObj.SetActive(false);
+        }
+
+        gliderTimeLeft=gliderMaxTime;
+
         coyoteTimeCounter = 0;
     }
 
     private void Update()
     {
-        Move();
-        Jump();
+        PMove();
         UpdateGroundedState();
     }
 
-    private void Move()
+    private void PMove()
     {
         float moveHorizontal = Input.GetAxis("Horizontal");
         float moveVertical = Input.GetAxis("Vertical");
@@ -51,23 +65,56 @@ public class PlayerMove : MonoBehaviour
             transform.rotation = Quaternion.Slerp(transform.rotation, targeRotate, TurnSpeed * Time.deltaTime);
         }
 
-        rb.velocity = new Vector3(moveHorizontal * PlayerSpeed, rb.velocity.y, moveVertical * PlayerSpeed);
-    }
-
-    private void Jump()
-    {
-        if (rb.velocity.y < 0) 
+        if (Input.GetKey(KeyCode.G) && !IsGround && gliderTimeLeft > 0)
         {
-            rb.velocity += Vector3.up * Physics.gravity.y * (falMultiplier - 1) * Time.deltaTime;
+            if(!isGlideing)
+            {
+                
+                EnableGlider();
+            }
+            gliderTimeLeft -= Time.deltaTime;
+            
+            if(gliderTimeLeft <= 0)
+            {
+                DisableGlider();
+            }
         }
-        else if(rb.velocity.y > 0 && !Input.GetButton("Jump"))
+        else if(isGlideing)
         {
-            rb.velocity += Vector3.up * Physics.gravity.y * (longJumpMtiplier - 1) * Time.deltaTime;
+            DisableGlider();
         }
 
-        if (Input.GetButtonDown("Jump")&&IsGround)
+        if(isGlideing)
         {
-            rb.AddForce(Vector3.up*JumpPower,ForceMode.Impulse);
+            ApplyGliderMovement(moveHorizontal, moveVertical);
+        }
+        else
+        {
+            rb.velocity = new Vector3(moveHorizontal * PlayerSpeed, rb.velocity.y, moveVertical * PlayerSpeed);
+
+            if (rb.velocity.y < 0)
+            {
+                rb.velocity += Vector3.up * Physics.gravity.y * (falMultiplier - 1) * Time.deltaTime;
+            }
+            else if (rb.velocity.y > 0 && !Input.GetButton("Jump"))
+            {
+                rb.velocity += Vector3.up * Physics.gravity.y * (longJumpMtiplier - 1) * Time.deltaTime;
+            }
+        }
+
+        if(IsGround)
+        {
+            if(isGlideing)
+            {
+                DisableGlider();
+            }
+
+            gliderTimeLeft = gliderMaxTime;
+        }
+
+        if (Input.GetButtonDown("Jump") && IsGround)
+        {
+            rb.AddForce(Vector3.up * JumpPower, ForceMode.Impulse);
             IsGround = false;
             realGround = false;
             coyoteTimeCounter = 0;
@@ -94,6 +141,37 @@ public class PlayerMove : MonoBehaviour
             }
             
         }
+    }
+
+    private void EnableGlider()
+    {
+        isGlideing = true;
+
+        if (gliderObj != null)
+        {
+            gliderObj.SetActive(true);
+        }
+
+        rb.velocity = new Vector3(rb.velocity.x,-gliderFallSpeed,rb.velocity.z);
+    }
+    
+    private void DisableGlider()
+    {
+        isGlideing = false;
+
+        if (gliderObj != null)
+        {
+            gliderObj.SetActive(false);
+        }
+
+        rb.velocity = new Vector3(rb.velocity.x,0,rb.velocity.z);
+    }
+
+    private void ApplyGliderMovement(float horizontal, float vertical)
+    {
+        Vector3 gliderVelocity = new Vector3(horizontal*gliderMoveSpeed,-gliderFallSpeed,vertical*gliderMoveSpeed);
+
+        rb.velocity = gliderVelocity;
     }
 
     private void OnCollisionEnter(Collision collision)
