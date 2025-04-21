@@ -15,6 +15,11 @@ public class PlayerMove : MonoBehaviour
     public float falMultiplier = 2.5f;
     public float longJumpMtiplier = 2f;
 
+    [Header("지연방지 설정")]
+    public float coyoteTime = 0.15f;
+    public float coyoteTimeCounter;
+    public bool realGround = true;
+
     public int CoinCount = 0;
     public int TotalCoin = 5;
 
@@ -23,13 +28,14 @@ public class PlayerMove : MonoBehaviour
 
     private void Awake()
     {
-        
+        coyoteTimeCounter = 0;
     }
 
     private void Update()
     {
         Move();
         Jump();
+        UpdateGroundedState();
     }
 
     private void Move()
@@ -63,6 +69,30 @@ public class PlayerMove : MonoBehaviour
         {
             rb.AddForce(Vector3.up*JumpPower,ForceMode.Impulse);
             IsGround = false;
+            realGround = false;
+            coyoteTimeCounter = 0;
+        }
+    }
+
+    private void UpdateGroundedState()
+    {
+        if (realGround)
+        {
+            coyoteTimeCounter = coyoteTime;
+            IsGround = true;
+        }
+        else
+        {
+            if(coyoteTimeCounter>0)
+            {
+                coyoteTimeCounter -= Time.deltaTime;
+                IsGround = true;
+            }
+            else
+            {
+                IsGround = false;
+            }
+            
         }
     }
 
@@ -70,6 +100,7 @@ public class PlayerMove : MonoBehaviour
     {
         if (collision.gameObject.tag == "Ground")
         {
+            realGround = true;
             IsGround = true;
             Debug.Log("땅에 다았습니다.");
         }
@@ -82,6 +113,22 @@ public class PlayerMove : MonoBehaviour
         else if(collision.gameObject.tag == "Door" && CoinCount < TotalCoin)
         {
             Debug.Log($"{TotalCoin - CoinCount}개의 코인을 더 모으세요");
+        }
+    }
+
+    private void OnCollisionStay(Collision collision)
+    {
+        if(collision.gameObject.tag=="Ground")
+        {
+            realGround = true;
+        }
+    }
+
+    private void OnCollisionExit(Collision collision)
+    {
+        if (collision.gameObject.tag == "Ground")
+        {
+            realGround = false;
         }
     }
 
