@@ -6,8 +6,14 @@ public class PlayerMove : MonoBehaviour
 {
     public Rigidbody rb;
 
+    [Header("기본 이동")]
     public float PlayerSpeed = 5f;
-    public float JumpPower = 5f;
+    public float JumpPower = 7f;
+    public float TurnSpeed = 10f;
+
+    [Header("점프 개선 설정")]
+    public float falMultiplier = 2.5f;
+    public float longJumpMtiplier = 2f;
 
     public int CoinCount = 0;
     public int TotalCoin = 5;
@@ -15,9 +21,9 @@ public class PlayerMove : MonoBehaviour
     public bool IsGround = true;
 
 
-    private void Start()
+    private void Awake()
     {
-        IsGround = true;
+        
     }
 
     private void Update()
@@ -31,12 +37,29 @@ public class PlayerMove : MonoBehaviour
         float moveHorizontal = Input.GetAxis("Horizontal");
         float moveVertical = Input.GetAxis("Vertical");
 
+        Vector3 movemant = new Vector3(moveHorizontal, 0, moveVertical);
+
+        if (movemant.magnitude > 0.1f)
+        {
+            Quaternion targeRotate = Quaternion.LookRotation(movemant);
+            transform.rotation = Quaternion.Slerp(transform.rotation, targeRotate, TurnSpeed * Time.deltaTime);
+        }
+
         rb.velocity = new Vector3(moveHorizontal * PlayerSpeed, rb.velocity.y, moveVertical * PlayerSpeed);
     }
 
     private void Jump()
     {
-        if(Input.GetButtonDown("Jump")&&IsGround)
+        if (rb.velocity.y < 0) 
+        {
+            rb.velocity += Vector3.up * Physics.gravity.y * (falMultiplier - 1) * Time.deltaTime;
+        }
+        else if(rb.velocity.y > 0 && !Input.GetButton("Jump"))
+        {
+            rb.velocity += Vector3.up * Physics.gravity.y * (longJumpMtiplier - 1) * Time.deltaTime;
+        }
+
+        if (Input.GetButtonDown("Jump")&&IsGround)
         {
             rb.AddForce(Vector3.up*JumpPower,ForceMode.Impulse);
             IsGround = false;
