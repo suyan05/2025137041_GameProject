@@ -164,7 +164,7 @@ public class GameManager : MonoBehaviour
 
     public void MergeRankes(DraggavleRank darggRank,DraggavleRank targetRank)
     {
-        if(darggRank==null||targetRank==null||darggRank.rankLevel!=targetRank.rankLevel)
+        if (darggRank == null || targetRank == null || darggRank.rankLevel != targetRank.rankLevel)
         {
             if(darggRank != null)
             {
