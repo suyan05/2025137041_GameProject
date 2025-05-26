@@ -74,6 +74,8 @@ public class GameManager : MonoBehaviour
         DraggavleRank rank = rankObj.AddComponent<DraggavleRank>();
         rank.SetRankLevel(level);
 
+        cell.SetRank(rank);
+
         return rank;
     }
 
